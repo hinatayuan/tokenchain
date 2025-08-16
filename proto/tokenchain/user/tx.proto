@@ -1,0 +1,73 @@
+// proto/tokenchain/user/tx.proto
+syntax = "proto3";
+
+package tokenchain.user;
+
+import "amino/amino.proto";
+import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/hinatayuan/tokenchain/x/user/types";
+
+// Msg defines the Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+  
+  // CreateUser defines a method for creating a new user
+  rpc CreateUser(MsgCreateUser) returns (MsgCreateUserResponse);
+  
+  // UpdateUser defines a method for updating user information
+  rpc UpdateUser(MsgUpdateUser) returns (MsgUpdateUserResponse);
+}
+
+// MsgCreateUser defines a message for creating a user
+message MsgCreateUser {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "tokenchain/MsgCreateUser";
+  
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string username = 2;
+  string email = 3;
+  string bio = 4;
+}
+
+// MsgCreateUserResponse defines the response for MsgCreateUser
+message MsgCreateUserResponse {
+  uint64 id = 1;
+}
+
+// MsgUpdateUser defines a message for updating user information
+message MsgUpdateUser {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "tokenchain/MsgUpdateUser";
+  
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 id = 2;
+  string username = 3;
+  string email = 4;
+  string bio = 5;
+}
+
+// MsgUpdateUserResponse defines the response for MsgUpdateUser
+message MsgUpdateUserResponse {}
+
+// User defines the user structure
+message User {
+  uint64 id = 1;
+  string address = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string username = 3;
+  string email = 4;
+  string bio = 5;
+  google.protobuf.Timestamp created_at = 6 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true,
+    (gogoproto.stdtime) = true
+  ];
+  google.protobuf.Timestamp updated_at = 7 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true,
+    (gogoproto.stdtime) = true
+  ];
+}

@@ -1,0 +1,62 @@
+// proto/tokenchain/mint/query.proto
+syntax = "proto3";
+
+package tokenchain.mint;
+
+import "amino/amino.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "tokenchain/mint/tx.proto";
+
+option go_package = "github.com/hinatayuan/tokenchain/x/mint/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Params returns the module parameters
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/tokenchain/mint/v1/params";
+  }
+  
+  // TotalSupply returns the total supply of the mint denom
+  rpc TotalSupply(QueryTotalSupplyRequest) returns (QueryTotalSupplyResponse) {
+    option (google.api.http).get = "/tokenchain/mint/v1/total_supply";
+  }
+  
+  // MintedTokens returns the total amount of tokens minted
+  rpc MintedTokens(QueryMintedTokensRequest) returns (QueryMintedTokensResponse) {
+    option (google.api.http).get = "/tokenchain/mint/v1/minted_tokens";
+  }
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method
+message QueryParamsResponse {
+  Params params = 1 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+}
+
+// QueryTotalSupplyRequest is the request type for the Query/TotalSupply RPC method
+message QueryTotalSupplyRequest {}
+
+// QueryTotalSupplyResponse is the response type for the Query/TotalSupply RPC method
+message QueryTotalSupplyResponse {
+  string total_supply = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// QueryMintedTokensRequest is the request type for the Query/MintedTokens RPC method
+message QueryMintedTokensRequest {}
+
+// QueryMintedTokensResponse is the response type for the Query/MintedTokens RPC method
+message QueryMintedTokensResponse {
+  string minted_tokens = 1 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}

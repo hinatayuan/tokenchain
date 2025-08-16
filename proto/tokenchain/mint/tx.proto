@@ -1,0 +1,70 @@
+// proto/tokenchain/mint/tx.proto
+syntax = "proto3";
+
+package tokenchain.mint;
+
+import "amino/amino.proto";
+import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/hinatayuan/tokenchain/x/mint/types";
+
+// Msg defines the Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+  
+  // MintTokens defines a method for minting new tokens
+  rpc MintTokens(MsgMintTokens) returns (MsgMintTokensResponse);
+  
+  // UpdateParams defines a method for updating the module parameters
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+}
+
+// MsgMintTokens defines a message for minting tokens
+message MsgMintTokens {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "tokenchain/MsgMintTokens";
+  
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string amount = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string recipient = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}
+
+// MsgMintTokensResponse defines the response for MsgMintTokens
+message MsgMintTokensResponse {}
+
+// MsgUpdateParams defines a message for updating module parameters
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "tokenchain/MsgUpdateParams";
+  
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  Params params = 2 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
+}
+
+// MsgUpdateParamsResponse defines the response for MsgUpdateParams
+message MsgUpdateParamsResponse {}
+
+// Params defines the parameters for the mint module
+message Params {
+  option (amino.name) = "tokenchain/mint/Params";
+  option (gogoproto.equal) = true;
+  
+  // mint_denom is the denomination of the token to mint
+  string mint_denom = 1;
+  
+  // max_supply is the maximum supply of tokens that can be minted
+  string max_supply = 2 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  
+  // minter_address is the address authorized to mint tokens
+  string minter_address = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}
